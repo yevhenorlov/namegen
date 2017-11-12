@@ -39,7 +39,7 @@ var makeStreetName = function(words) {
 var dwellerList = function() {
   var dwellArr = ""
   for (i=0; i<25; i++) {
-    dwellArr += makeName(w) + ", " + sex.getrandom() + " " + raceArr.getrandom() + " " + professions.getrandom() + " who lives in " + makeStreetName(w) + locations.getrandom() + ".\n\n"
+    dwellArr += makeName(w) + ", " + gender.getrandom() + " " + raceArr.getrandom() + " " + professions.getrandom() + " who lives in " + makeStreetName(w) + locations.getrandom() + ".\n\n"
   }
   return dwellArr
 }
@@ -62,8 +62,8 @@ var locations = [
 'street', 'avenue', 'Square', 'quarter', 'Guild', 'temple'
 ]
 
-var sex = [
-'male', 'female', 'male', 'female', 'hermafrodite'
+var gender = [
+'male', 'female', 'non-binary'
 ]
 
 var raceArr = ['human', 'dwarf', 'halfling', 'elf', 'orc']
