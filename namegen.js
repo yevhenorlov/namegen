@@ -1,83 +1,113 @@
-var makeWords = function(values) {
-  var textArr = [];
-  var numbers = '0123456789';
-  var caps = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  var possible = values || "abcdefghijklmnopqrstuvwxyz";
-  var nonwovels = 'bcdfghjklmnpqrstvwxzy';
-  var vowels = 'aeoui'
-  while(textArr.length<50) {
-    var text = "";
-    var nameLength = Math.floor(Math.random() * 4) + 3;
-    for( var i=0; i < nameLength; i++ ) {     
-      arr = i % 3 ? vowels : nonwovels;
-      c = arr.charAt(Math.floor(Math.random() * arr.length))
-      text += c;
-    }
-    textArr.push(text);
-  }
-  return textArr
-}
+const CONSONANTS = 'bcdfghjklmnpqrstvwxzy'
 
-var makeName = function(words) {
-   var name = words.getrandom();
-   var surname = words.getrandom();
-   return name.capitalize() + " " + surname.capitalize()
-}
+const VOWELS = 'aeoui'
 
-var makeCityName = function(words) {
-   var firstCompound = words.getrandom();
-   var secondCompound = words.getrandom();
-   return firstCompound.capitalize() + "-" + secondCompound.capitalize()
-}
+const WORDS_AMOUNT = 50
 
-var makeStreetName = function(words) {
-  var streetName = words.getrandom();
-  return streetName.capitalize() + ' '
-}
+const LOCATIONS = ['street', 'avenue', 'Square', 'quarter', 'Guild', 'temple']
 
+const GENDERS = ['male', 'female', 'non-binary']
 
-var dwellerList = function() {
-  var dwellArr = ""
-  for (i=0; i<25; i++) {
-    dwellArr += makeName(w) + ", " + gender.getrandom() + " " + raceArr.getrandom() + " " + professions.getrandom() + " who lives in " + makeStreetName(w) + locations.getrandom() + ".\n\n"
-  }
-  return dwellArr
-}
+const BASIC_RACES = ['human', 'dwarf', 'halfling', 'elf', 'orc']
 
-// bullshit
-String.prototype.capitalize = function() {
-    return this.charAt(0).toUpperCase() + this.slice(1);
-}
-
-Array.prototype.getrandom = function() {
-    return this[Math.floor(Math.random() * this.length)]
-}
-
-
-var professions = [
-'assassin', 'butcher', 'teacher', 'monk', 'child', 'plumber', 'student', 'senator', 'mage', 'hunter', 'warrior', 'glass maker', 'potter', 'miner', 'mason', 'farmer', 'commoner', 'ranger', 'scout', 'thief', 'sailor', 'carpenter', 'blacksmith', 'weaponsmith', 'armorer'
+const PROFESSIONS = [
+  'assassin',
+  'butcher',
+  'teacher',
+  'monk',
+  'child',
+  'plumber',
+  'student',
+  'senator',
+  'mage',
+  'hunter',
+  'warrior',
+  'glass maker',
+  'potter',
+  'miner',
+  'mason',
+  'farmer',
+  'commoner',
+  'ranger',
+  'scout',
+  'thief',
+  'sailor',
+  'carpenter',
+  'blacksmith',
+  'weaponsmith',
+  'armorer'
 ]
 
-var locations = [
-'street', 'avenue', 'Square', 'quarter', 'Guild', 'temple'
-]
+const getRandomIntInRange = (range, base) =>
+  base + Math.floor(Math.random() * range)
 
-var gender = [
-'male', 'female', 'non-binary'
-]
+const capitalize = string => string.charAt(0).toUpperCase() + string.slice(1)
 
-var raceArr = ['human', 'dwarf', 'halfling', 'elf', 'orc']
-for (i=0;i<5;i++) {
-  raceName = makeWords();
-  raceArr.push(raceName.getrandom());
+const getRandom = array => array[Math.floor(Math.random() * array.length)]
+
+const makeWord = () => {
+  const length = getRandomIntInRange(3, 4)
+  const word = Array.from({ length })
+  return word
+    .map((char, i) => {
+      const sounds = i % 3 ? VOWELS : CONSONANTS
+      return sounds[Math.floor(Math.random() * sounds.length)]
+    })
+    .join('')
 }
 
-w = makeWords("");
+const makeWords = amount => {
+  const words = Array.from({ length: amount })
+  return words.map(makeWord)
+}
 
-var cityName = makeCityName(w)
-console.log(
-  "This is the outpost of " + cityName
-  
-  + ".\nIt is populated by several races: " + raceArr.join(", ") + ".\n" +
-  "25 colonists live in " + cityName +":\n\n" + dwellerList()
-)
+const makeName = words => {
+  const name = getRandom(words)
+  const surname = getRandom(words)
+  return `${capitalize(name)} ${capitalize(surname)}`
+}
+
+const makeCityName = words => {
+  const firstCompound = getRandom(words)
+  const secondCompound = getRandom(words)
+  return `${capitalize(firstCompound)}-${capitalize(secondCompound)}`
+}
+
+const makeStreetName = words => {
+  const streetName = getRandom(words)
+  return capitalize(streetName)
+}
+
+const makeDwellerList = (length = 25, words) => {
+  const list = Array.from({ length })
+  return list
+    .map(
+      () =>
+        `${makeName(words)}, ${getRandom(GENDERS)} ${getRandom(
+          RACES
+        )} ${getRandom(PROFESSIONS)}, who lives in ${makeStreetName(
+          words
+        )} ${getRandom(LOCATIONS)}`
+    )
+    .join('.\n\n')
+}
+
+const makeRaces = length => Array.from({ length }).map(makeWord)
+
+const CUSTOM_RACES = makeRaces(5)
+
+const RACES = [...CUSTOM_RACES, ...BASIC_RACES]
+
+const words = makeWords(WORDS_AMOUNT)
+
+const cityName = makeCityName(words)
+const COLONISTS_AMOUNT = 15
+const text = `This is the outpost of ${cityName}.
+
+It is populated by several races:
+${RACES.join(', ')}.
+
+${COLONISTS_AMOUNT} colonists live in ${cityName}:
+
+${makeDwellerList(COLONISTS_AMOUNT, words)}`
+console.log(text)
